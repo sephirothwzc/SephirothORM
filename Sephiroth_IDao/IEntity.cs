@@ -20,7 +20,11 @@ using System.Threading.Tasks;
 
 namespace Sephiroth_IDao
 {
-    public class IEntity
+    /// <summary>
+    /// VO base
+    /// </summary>
+    public interface IEntity
     {
+
     }
 }
