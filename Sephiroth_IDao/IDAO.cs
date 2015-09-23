@@ -60,7 +60,7 @@ namespace Sephiroth_IDao
 
 
         /// <summary>
-        /// 查询返回 建议返回IEntity
+        /// 查询返回 建议返回BaseEntity
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
@@ -72,7 +72,7 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 插入对象属性为空则不生成insert 返回受影响行数
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">插入对象</param>
         /// <returns>受影响行数</returns>
         int Insert<T>(T param) where T : new();
@@ -80,7 +80,7 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 插入集合是否事务执行默认true
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">插入对象</param>
         /// <param name="transaction">是否事务执行默认true</param>
         /// <returns>受影响行数</returns>
@@ -91,7 +91,7 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 单个对象更新for key
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">更新对象</param>
         /// <returns>受影响行数</returns>
         int Update<T>(T param) where T : new();
@@ -99,7 +99,7 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 集合更新主键不允许为空
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">更新对象集合</param>
         /// <param name="all">true：以第一个对象为准生成sql批量执行插入。false：逐个生成sql</param>
         /// <returns>受影响行数</returns>
@@ -110,7 +110,7 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 根据对象主键删除
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param"></param>
         /// <returns></returns>
         int Delete<T>(T param) where T : new();
@@ -118,7 +118,7 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 根据主键删除批量执行
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param"></param>
         /// <returns></returns>
         int Delete<T>(IEnumerable<T> param) where T : new();//where T:class
@@ -128,20 +128,36 @@ namespace Sephiroth_IDao
         /// <summary>
         /// 执行sql语句
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="sql">sql脚本</param>
         /// <param name="param">参数对象</param>
         /// <returns>受影响行数</returns>
         int Execute<T>(string sql, T param) where T : new();
 
         /// <summary>
+        ///  执行sql语句
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        int Execute(string sql, object param);
+
+        /// <summary>
         /// 执行sql语句
         /// </summary>
-        /// <typeparam name="T">泛型对象建议IEntity</typeparam>
+        /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="sql">sql脚本</param>
         /// <param name="param">参数对象</param>
         /// <returns></returns>
         int Execute<T>(string sql, IEnumerable<T> param);
+
+        /// <summary>
+        /// 执行sql语句
+        /// </summary>
+        /// <param name="sql"></param>
+        /// <param name="param"></param>
+        /// <returns></returns>
+        int Execute(string sql, IEnumerable<object> param);
         #endregion
     }
 }

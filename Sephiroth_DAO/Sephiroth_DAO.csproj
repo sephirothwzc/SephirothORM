@@ -48,6 +48,7 @@
     <Compile Include="BaseDAO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="realize\DapperDAO.cs" />
+    <Compile Include="realize\MSSQLSqlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sephiroth_IDao\Sephiroth_IDao.csproj">

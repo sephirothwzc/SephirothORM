@@ -53,7 +53,7 @@ namespace Sephiroth_DAO
         }
 
         /// <summary>
-        /// 用于匿名类型参数查询返回IEntity
+        /// 用于匿名类型参数查询返回BaseEntity
         /// </summary>
         /// <param name="sql">sql 脚本</param>
         /// <param name="param">匿名类型参数</param>
@@ -98,11 +98,20 @@ namespace Sephiroth_DAO
             return absORM.Execute(sql, param);
         }
 
+        public int Execute(string sql, object param)
+        {
+            return absORM.Execute(sql, param);
+        }
+
         public int Execute(string sql, IEnumerable<T> param)
         {
             return absORM.Execute(sql, param);
         }
 
+        public int Execute(string sql, IEnumerable<object> param)
+        {
+            return absORM.Execute(sql, param);
+        }
         #endregion
     }
 }
