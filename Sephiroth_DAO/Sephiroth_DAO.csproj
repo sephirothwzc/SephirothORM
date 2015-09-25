@@ -52,6 +52,10 @@
     <Compile Include="realize\MSSQLSqlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SephirothCommon\SephirothCommon.csproj">
+      <Project>{66ed31da-b2f6-4492-927c-a494b051c571}</Project>
+      <Name>SephirothCommon</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Sephiroth_IDao\Sephiroth_IDao.csproj">
       <Project>{db677b54-7744-4191-8a94-93a9db337827}</Project>
       <Name>Sephiroth_IDao</Name>

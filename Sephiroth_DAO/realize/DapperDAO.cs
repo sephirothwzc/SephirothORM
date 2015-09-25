@@ -1,9 +1,12 @@
-﻿using System;
+﻿using Sephiroth_IDao;
+using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Dapper;
+using SephirothCommon;
 
 /*************************************************************************************
   * CLR 版本：       4.0.30319.33440
@@ -21,7 +24,7 @@ using System.Threading.Tasks;
 namespace Sephiroth_DAO
 {
     /// <summary>
-    /// dapper 实现 IDAO
+    /// dapper 实现 IDAO 用于porxy创建
     /// </summary>
     public class DapperDAO : Sephiroth_IDao.IDAO 
     {
@@ -35,6 +38,11 @@ namespace Sephiroth_DAO
         /// 数据库链接字符串
         /// </summary>
         private string connection { get; set; }
+
+        /// <summary>
+        /// 脚本生成对象 根据数据库类型动态创建
+        /// </summary>
+        private ISqlHelper sqlhelper { get; set; }
         #endregion
 
         #region 构造函数
@@ -45,6 +53,9 @@ namespace Sephiroth_DAO
         {
             this.dbconn = dbconn;
             this.SetSqlConnection(this.dbconn);
+            this.sqlhelper = ReflectionHelper.CreateInstance<ISqlHelper>(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Namespace,
+                System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Namespace,
+                this.dbconn.dbtype + "_Helper");
         }
         #endregion 
     
@@ -100,16 +111,16 @@ namespace Sephiroth_DAO
         /// <returns></returns>
         public IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "") where T : new()
         {
-            //Interface_SqlHelper sqlhelper = this.GetSqlHelper(this.sysDao.dbtype);
-            //using (IDbConnection conn = OpenConnection())
-            //{
-            //    string sql;
-            //    if (paramwhere == "")// 有条件生成sql
-            //        sql = sqlhelper.Sql_Select(param == null ? new T() : param, columns, paramwhere);
-            //    else//有对象无条件无列名，全自动生成  and 条件的 所有列名 sql
-            //        sql = sqlhelper.Sql_Select(param == null ? new T() : param);
-            //    return conn.Query<T>(sql, param);
-            //}
+            ISqlHelper sqlhelper = this.GetSqlHelper(this.sysDao.dbtype);
+            using (IDbConnection conn = OpenConnection())
+            {
+                string sql;
+                if (paramwhere == "")// 有条件生成sql
+                    sql = sqlhelper.Sql_Select(param == null ? new T() : param, columns, paramwhere);
+                else//有对象无条件无列名，全自动生成  and 条件的 所有列名 sql
+                    sql = sqlhelper.Sql_Select(param == null ? new T() : param);
+                return conn.Query<T>(sql, param);
+            }
             return null;
         }
 
