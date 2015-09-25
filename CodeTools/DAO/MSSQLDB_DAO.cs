@@ -30,14 +30,14 @@ namespace CodeTools.DAO
         /// <param name="sdao"></param>
         public MSSQLDB_DAO(DB_Connection sdao)
         {
-
+            this.absorm = new Sephiroth_DAO.DapperDAO(sdao);//根据配置选择生成不同方式的dao实例 比如dapper、entityframework
         }
 
         #region 实现IDAO absORM
         /// <summary>
         /// 用于实现的IDAO 
         /// </summary>
-        public IDAO absorm = null;
+        private IDAO absorm = null;
 
         public override IDAO absORM
         {
@@ -52,6 +52,7 @@ namespace CodeTools.DAO
         }
         #endregion 
 
+        #region GetDBTree : 获取数据库当前对象
         /// <summary>
         /// 获取数据库当前对象
         /// </summary>
@@ -71,7 +72,14 @@ namespace CodeTools.DAO
             var rows = this.QueryDynamic(sql);
             return rows;
         }
+        #endregion
 
+        #region GetTableObject ： 获取表对象的实例
+        /// <summary>
+        /// 获取表对象的实例
+        /// </summary>
+        /// <param name="tablename"></param>
+        /// <returns></returns>
         public IEnumerable<Entity.TableObject> GetTableObject(string tablename)
         {
             #region MSsql 的实现方式
@@ -139,7 +147,8 @@ SELECT (case
  order by a.id, a.colorder
 ", tablename);
             #endregion
-            return this.Query<Entity.TableObject>(sql);
+            return this.absorm.Query<CodeTools.Entity.TableObject>(sql);
         }
+        #endregion 
     }
 }

@@ -8,7 +8,7 @@ using System.Text;
 using System.Windows.Forms;
 using CodeTools.Facade;
 using System.Diagnostics;
-using Commonly;
+using SephirothCommon;
 
 
 /*************************************************************************************

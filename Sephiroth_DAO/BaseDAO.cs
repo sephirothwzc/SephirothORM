@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Sephiroth_IDao;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace Sephiroth_DAO
     /// <summary>
     /// 超级DAO 实现了Sephiroth_IDao.IDAO EntityDAO继承
     /// </summary>
-    public abstract class BaseDAO<T>  where T : new()
+    public abstract class BaseDAO<T>   where T : BaseEntity, new()
     {
         /// <summary>
         /// 必须实现absORM

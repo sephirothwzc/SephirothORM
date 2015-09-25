@@ -7,6 +7,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Dapper;
 using SephirothCommon;
+using System.Data.SqlClient;
+using MySql.Data.MySqlClient;
+using Oracle.DataAccess.Client;
 
 /*************************************************************************************
   * CLR 版本：       4.0.30319.33440
@@ -55,10 +58,32 @@ namespace Sephiroth_DAO
             this.SetSqlConnection(this.dbconn);
             this.sqlhelper = ReflectionHelper.CreateInstance<ISqlHelper>(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Namespace,
                 System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Namespace,
-                this.dbconn.dbtype + "_Helper");
+                this.dbconn.dbtype + "Helper");//根据数据库类型
         }
         #endregion 
-    
+
+        #region OpenConnection：返回数据库链接
+        public IDbConnection OpenConnection()
+        {
+            IDbConnection sqlconn;
+            switch (this.dbconn.dbtype)
+            {
+                case DB_Connection.e_DBType.MSSQL:
+                    sqlconn = new SqlConnection(this.connection);
+                    sqlconn.Open();
+                    return sqlconn;
+                case DB_Connection.e_DBType.MYSQL:
+                    sqlconn = new MySqlConnection(this.connection);
+                    sqlconn.Open();
+                    return sqlconn;
+                case DB_Connection.e_DBType.ORACLE:
+                    sqlconn = new OracleConnection(this.connection);
+                    sqlconn.Open();
+                    return sqlconn;
+            }
+            return null;
+        }
+        #endregion
     
         #region IDAO 成员
         /// <summary>
@@ -109,9 +134,8 @@ namespace Sephiroth_DAO
         /// <param name="columns"></param>
         /// <param name="paramwhere"></param>
         /// <returns></returns>
-        public IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "") where T : new()
+        public IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "")  where T : BaseEntity, new()
         {
-            ISqlHelper sqlhelper = this.GetSqlHelper(this.sysDao.dbtype);
             using (IDbConnection conn = OpenConnection())
             {
                 string sql;
@@ -129,42 +153,42 @@ namespace Sephiroth_DAO
             throw new NotImplementedException();
         }
 
-        public IEnumerable<T> Query<T>(string sql, object param = null) where T : new()
+        public IEnumerable<T> Query<T>(string sql, object param = null)  where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Insert<T>(T param) where T : new()
+        public int Insert<T>(T param) where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Insert<T>(IEnumerable<T> param, bool transaction = true) where T : new()
+        public int Insert<T>(IEnumerable<T> param, bool transaction = true) where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Update<T>(T param) where T : new()
+        public int Update<T>(T param) where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Update<T>(IEnumerable<T> param, bool all = false) where T : new()
+        public int Update<T>(IEnumerable<T> param, bool all = false)  where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Delete<T>(T param) where T : new()
+        public int Delete<T>(T param) where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Delete<T>(IEnumerable<T> param) where T : new()
+        public int Delete<T>(IEnumerable<T> param)  where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }
 
-        public int Execute<T>(string sql, T param) where T : new()
+        public int Execute<T>(string sql, T param)  where T : BaseEntity, new()
         {
             throw new NotImplementedException();
         }

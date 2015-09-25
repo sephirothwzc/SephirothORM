@@ -133,7 +133,7 @@ namespace Sephiroth_DAO.realize
         /// <param name="columns">获取列</param>
         /// <param name="wheres">自定义条件</param>
         /// <returns></returns>
-        public string Sql_Select(Sephiroth_IDao.BaseEntity model, List<string> columns = null, string wheres = "")
+        public string Sql_Select(Sephiroth_IDao.BaseEntity model, IEnumerable<string> columns = null, string wheres = "")
         {
             StringBuilder sql = new StringBuilder();
             List<string> strcolumn = new List<string>();
