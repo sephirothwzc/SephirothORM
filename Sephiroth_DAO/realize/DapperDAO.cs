@@ -10,6 +10,7 @@ using SephirothCommon;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using Oracle.DataAccess.Client;
+using System.Diagnostics;
 
 /*************************************************************************************
   * CLR 版本：       4.0.30319.33440
@@ -143,9 +144,11 @@ namespace Sephiroth_DAO
                     sql = sqlhelper.Sql_Select(param == null ? new T() : param, columns, paramwhere);
                 else//有对象无条件无列名，全自动生成  and 条件的 所有列名 sql
                     sql = sqlhelper.Sql_Select(param == null ? new T() : param);
+#if DEBUG
+                Debug.Print(sql);
+#endif
                 return conn.Query<T>(sql, param);
             }
-            return null;
         }
 
         public IEnumerable<dynamic> QueryDynamic(string sql, object param = null)
