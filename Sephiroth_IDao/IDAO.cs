@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,10 @@ namespace Sephiroth_IDao
         void SetSqlConnection(DB_Connection db_Connection);
         #endregion 
 
+        #region 事务创建
+        IDbTransaction CreateIDbTransaction();
+        #endregion 
+
         #region 查询
         /// <summary>
         /// 查询返回数据集
@@ -47,7 +52,7 @@ namespace Sephiroth_IDao
         /// <param name="columns">获取列，默认返回当前对象mapping列</param>
         /// <param name="paramwhere">查询条件 例'username=@UserName'属性对应param.[UserName]</param>
         /// <returns></returns>
-        IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "") where T : BaseEntity, new();
+        IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "", IDbTransaction idbtransaction = null) where T : BaseEntity, new();
 
         /// <summary>
         /// 查询返回数据集
@@ -55,7 +60,7 @@ namespace Sephiroth_IDao
         /// <param name="sql">完整sql</param>
         /// <param name="param">参数用对象</param>
         /// <returns></returns>
-        IEnumerable<dynamic> QueryDynamic(string sql, object param = null);
+        IEnumerable<dynamic> QueryDynamic(string sql, object param = null, IDbTransaction idbtransaction = null);
 
 
 
@@ -64,7 +69,7 @@ namespace Sephiroth_IDao
         /// </summary>
         /// <param name="sql"></param>
         /// <returns></returns>
-        IEnumerable<T> Query<T>(string sql, object param = null) where T : BaseEntity, new();
+        IEnumerable<T> Query<T>(string sql, object param = null, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
         #endregion
 
         #region Insert
@@ -75,16 +80,16 @@ namespace Sephiroth_IDao
         /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">插入对象</param>
         /// <returns>受影响行数</returns>
-        int Insert<T>(T param) where T : BaseEntity, new();
+        int Insert<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
 
         /// <summary>
         /// 插入集合是否事务执行默认true
         /// </summary>
         /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">插入对象</param>
-        /// <param name="transaction">是否事务执行默认true</param>
+        /// <param name="firstsql">true以第一对象生成脚本false每个对象逐个生成脚本</param>
         /// <returns>受影响行数</returns>
-        int Insert<T>(IEnumerable<T> param, bool transaction = true) where T : BaseEntity, new();
+        int Insert<T>(IEnumerable<T> param, bool firstsql = true, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
         #endregion
 
         #region Update
@@ -94,7 +99,7 @@ namespace Sephiroth_IDao
         /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">更新对象</param>
         /// <returns>受影响行数</returns>
-        int Update<T>(T param) where T : BaseEntity, new();
+        int Update<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
 
         /// <summary>
         /// 集合更新主键不允许为空
@@ -103,7 +108,7 @@ namespace Sephiroth_IDao
         /// <param name="param">更新对象集合</param>
         /// <param name="all">true：以第一个对象为准生成sql批量执行插入。false：逐个生成sql</param>
         /// <returns>受影响行数</returns>
-        int Update<T>(IEnumerable<T> param, bool all = false) where T : BaseEntity, new();
+        int Update<T>(IEnumerable<T> param, bool all = false, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
         #endregion
 
         #region Delete
@@ -113,7 +118,7 @@ namespace Sephiroth_IDao
         /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param"></param>
         /// <returns></returns>
-        int Delete<T>(T param) where T : BaseEntity, new();
+        int Delete<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
 
         /// <summary>
         /// 根据主键删除批量执行
@@ -121,7 +126,7 @@ namespace Sephiroth_IDao
         /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param"></param>
         /// <returns></returns>
-        int Delete<T>(IEnumerable<T> param) where T : BaseEntity, new();
+        int Delete<T>(IEnumerable<T> param, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
         #endregion
 
         #region Execute
@@ -132,7 +137,7 @@ namespace Sephiroth_IDao
         /// <param name="sql">sql脚本</param>
         /// <param name="param">参数对象</param>
         /// <returns>受影响行数</returns>
-        int Execute<T>(string sql, T param) where T : BaseEntity, new();
+        int Execute<T>(string sql, T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
 
         /// <summary>
         ///  执行sql语句
@@ -140,7 +145,7 @@ namespace Sephiroth_IDao
         /// <param name="sql"></param>
         /// <param name="param"></param>
         /// <returns></returns>
-        int Execute(string sql, object param);
+        int Execute(string sql, object param, IDbTransaction idbtransaction = null);
 
         /// <summary>
         /// 执行sql语句
@@ -149,7 +154,7 @@ namespace Sephiroth_IDao
         /// <param name="sql">sql脚本</param>
         /// <param name="param">参数对象</param>
         /// <returns></returns>
-        int Execute<T>(string sql, IEnumerable<T> param);
+        int Execute<T>(string sql, IEnumerable<T> param, IDbTransaction idbtransaction = null);
 
         /// <summary>
         /// 执行sql语句
@@ -157,7 +162,7 @@ namespace Sephiroth_IDao
         /// <param name="sql"></param>
         /// <param name="param"></param>
         /// <returns></returns>
-        int Execute(string sql, IEnumerable<object> param);
+        int Execute(string sql, IEnumerable<object> param, IDbTransaction idbtransaction = null);
         #endregion
     }
 }

@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
 using Oracle.DataAccess.Client;
 using System.Diagnostics;
+using System.Reflection;
 
 /*************************************************************************************
   * CLR 版本：       4.0.30319.33440
@@ -64,8 +65,11 @@ namespace Sephiroth_DAO
         #endregion 
 
         #region OpenConnection：返回数据库链接
-        public IDbConnection OpenConnection()
+        public IDbConnection OpenConnection(IDbTransaction idbtransaction = null)
         {
+            if (idbtransaction != null)//如果事务对象创建则不需要重新生成
+                return idbtransaction.Connection;
+
             IDbConnection sqlconn;
             switch (this.dbconn.dbtype)
             {
@@ -102,7 +106,7 @@ namespace Sephiroth_DAO
         /// <param name="db_Connection"></param>
         public void SetSqlConnection(Sephiroth_IDao.DB_Connection db_Connection)
         {
-            switch (db_Connection.dbtype)
+            switch (dbconn.dbtype)
             {
                 case Sephiroth_IDao.DB_Connection.e_DBType.MSSQL:
                     connection = string.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};"
@@ -127,6 +131,13 @@ namespace Sephiroth_DAO
             }
         }
 
+        #region 事务创建
+        public IDbTransaction CreateIDbTransaction()
+        {
+            return OpenConnection().BeginTransaction();
+        }
+        #endregion 
+
         /// <summary>
         /// 获取查询结果集
         /// </summary>
@@ -135,9 +146,9 @@ namespace Sephiroth_DAO
         /// <param name="columns"></param>
         /// <param name="paramwhere"></param>
         /// <returns></returns>
-        public IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "")  where T : BaseEntity, new()
+        public IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "",IDbTransaction idbtransaction = null)  where T : BaseEntity, new()
         {
-            using (IDbConnection conn = OpenConnection())
+            using (IDbConnection conn = OpenConnection(idbtransaction))
             {
                 string sql;
                 if (paramwhere == "")// 有条件生成sql
@@ -147,68 +158,140 @@ namespace Sephiroth_DAO
 #if DEBUG
                 Debug.Print(sql);
 #endif
-                return conn.Query<T>(sql, param);
+                return conn.Query<T>(sql, param, idbtransaction);
             }
         }
 
-        public IEnumerable<dynamic> QueryDynamic(string sql, object param = null)
+        public IEnumerable<dynamic> QueryDynamic(string sql, object param = null, IDbTransaction idbtransaction = null)
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Query(sql, param, idbtransaction);
+            }
         }
 
-        public IEnumerable<T> Query<T>(string sql, object param = null)  where T : BaseEntity, new()
+        public IEnumerable<T> Query<T>(string sql, object param = null, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Query<T>(sql, param, idbtransaction);
+            }
         }
 
-        public int Insert<T>(T param) where T : BaseEntity, new()
+        public int Insert<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            string sql = sqlhelper.Sql_Insert(param);
+            int row = 0;
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+                row = conn.Execute(sql, param, idbtransaction);
+                //根据业务发生情况决定是否 追加 数据库主键自增的查询
+            }
+            return row;
         }
 
-        public int Insert<T>(IEnumerable<T> param, bool transaction = true) where T : BaseEntity, new()
+        public int Insert<T>(IEnumerable<T> param, bool firstsql = true, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            if (firstsql)
+            {
+                string sql = sqlhelper.Sql_Insert(param.FirstOrDefault());
+                return this.Execute(sql, param, idbtransaction);
+            }
+            else
+            {
+                int i = 1;
+                foreach (T item in param)
+                {
+                    i += this.Insert(item, idbtransaction);
+                }
+                return i;
+            }
         }
 
-        public int Update<T>(T param) where T : BaseEntity, new()
+        public int Update<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            string sql = sqlhelper.Sql_Update(param);
+            return this.Execute(sql, param, idbtransaction);
         }
 
-        public int Update<T>(IEnumerable<T> param, bool all = false)  where T : BaseEntity, new()
+        public int Update<T>(IEnumerable<T> param, bool all = false, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            if (all)
+            {
+                string sql = sqlhelper.Sql_Update(param.FirstOrDefault());
+                return this.Execute(sql, param, idbtransaction);
+            }
+            else
+            {
+                int i = 1;
+                foreach (T item in param)
+                {
+                    i += this.Update(item, idbtransaction);
+                }
+                return i;
+            }
         }
 
-        public int Delete<T>(T param) where T : BaseEntity, new()
+        public int Delete<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            string sql = sqlhelper.Sql_Delete(param);
+            return this.Execute(sql, param, idbtransaction);
         }
 
-        public int Delete<T>(IEnumerable<T> param)  where T : BaseEntity, new()
+        public int Delete<T>(IEnumerable<T> param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            string sql = sqlhelper.Sql_Delete(param.FirstOrDefault());
+            return this.Execute(sql, param, idbtransaction);
         }
 
-        public int Execute<T>(string sql, T param)  where T : BaseEntity, new()
+        public int Execute<T>(string sql, T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Execute(sql, param,idbtransaction);
+            }
         }
 
-        public int Execute(string sql, object param)
+        public int Execute(string sql, object param, IDbTransaction idbtransaction = null)
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Execute(sql, param, idbtransaction);
+            }
         }
 
-        public int Execute<T>(string sql, IEnumerable<T> param)
+        public int Execute<T>(string sql, IEnumerable<T> param, IDbTransaction idbtransaction = null)
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Execute(sql, param, idbtransaction);
+            }
         }
 
-        public int Execute(string sql, IEnumerable<object> param)
+        public int Execute(string sql, IEnumerable<object> param, IDbTransaction idbtransaction = null)
         {
-            throw new NotImplementedException();
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Execute(sql, param, idbtransaction);
+            }
         }
 
         #endregion

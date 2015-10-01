@@ -53,5 +53,6 @@ namespace Sephiroth_IDao
         /// <param name="wheres"></param>
         /// <returns></returns>
         string Sql_Select(BaseEntity model, IEnumerable<string> columns = null, string wheres = "");
+
     }
 }
