@@ -64,7 +64,7 @@
     <Compile Include="Entity\TableObject.cs" />
     <Compile Include="Facade\CreateDAO.cs" />
     <Compile Include="Facade\CreateEntity.cs" />
-    <Compile Include="Facade\CreateSYSDAO.cs" />
+    <Compile Include="Facade\CreateDB_Connection.cs" />
     <Compile Include="Facade\DB_DAO_Facade.cs" />
     <Compile Include="Facade\DXErrorProvider_Proxy.cs" />
     <Compile Include="Forms\CreateSetting.cs">
@@ -107,6 +107,7 @@
     <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Properties\licenses.licx" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

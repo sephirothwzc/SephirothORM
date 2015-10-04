@@ -35,7 +35,7 @@ namespace CodeTools.Facade
 
         public DB_DAO_Facade(DB_Connection dao)
         {
-            this.idb = ReflectionHelper.CreateInstanceT<IDB_DAO>("DapperTools", "DapperTools.DAO", Login.dao.dbtype + "DB_DAO", typeof(BaseEntity), new object[] { dao });
+            this.idb = ReflectionHelper.CreateInstanceT<IDB_DAO>("CodeTools", "CodeTools.DAO", Login.dao.dbtype + "DB_DAO", typeof(BaseEntity), new object[] { dao });
             //根据数据库类型不同生成不同DB_DAO 例如 [MSSQL][DB_DAO]
         }
         /// <summary>

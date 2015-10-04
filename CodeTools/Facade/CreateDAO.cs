@@ -89,9 +89,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Interface_Dapper;
 using Entity;
-using Interface_ORM;
+using Sephiroth_IDao;
 
 /*************************************************************************************
     * CLR 版本：       4.0.30319.33440
@@ -114,13 +113,14 @@ namespace {3}
     [Table(""{0}"")]
     public class {0}_DAO : BaseDAO<{0}>
     {{
-        private Interface_ORM<{0}> dao = new Dapper_DAO<{0}>(CreateSYSDAO.GetSephiroth_System());
-        public override Interface_ORM<{0}> absORM
-        {
-            get { return dao; }
-            set { dao = value; }
-        }
-", this.filename, PC_Helper.GetMachineName(), DateTime.Now.ToString(), this.fullname, this.remark));
+        private Sephiroth_IDao.IDAO dao = new DapperDAO<{0}>(Sephiroth_DAO.CreateDB_Connection.GetSephiroth_System());
+        public override Sephiroth_IDao.IDAO absORM 
+        {{
+            get {{ return dao; }}
+            set {{ dao = value; }}
+        }}
+", this.filename, PC_Helper.GetMachineName(), DateTime.Now.ToString("yyyy-MM-dd HH:mm"), this.fullname, this.remark ?? ""));
+
             
             sb.Append(string.Format(@"    }}
 }}
