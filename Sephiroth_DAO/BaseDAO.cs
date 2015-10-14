@@ -51,7 +51,7 @@ namespace Sephiroth_DAO
         }
         #endregion 
 
-        public IEnumerable<T> Query(T param, IEnumerable<string> columns = null, string paramwhere = "", IDbTransaction idbtransaction = null) 
+        public IEnumerable<T> Query(T param=null, IEnumerable<string> columns = null, string paramwhere = "", IDbTransaction idbtransaction = null) 
         {
             return absORM.Query(param, columns, paramwhere, idbtransaction);
         }

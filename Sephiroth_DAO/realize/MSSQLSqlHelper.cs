@@ -21,7 +21,7 @@ using System.Reflection;
   * 修 改 人：
  *************************************************************************************/
 
-namespace Sephiroth_DAO.realize
+namespace Sephiroth_DAO
 {
     /// <summary>
     /// MESSQL脚本帮助类

@@ -126,7 +126,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Interface_Dapper;
+using Sephiroth_IDao;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -158,7 +158,7 @@ namespace {3}
             foreach (TableObject t in this.tableobj)
             {
                 #region 输出字符串常量对应数据库字段属性 和属性名称相同 但是有可能和数据库大小写不同 暂且不考虑 mysql的 数据库 区分大小写
-                sb.AppendLine(string.Format(@"        public const string {0} = ""{1}""; ", t.ColName.ToUpper(), this.toupper?System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(t.ColName):t.ColName));
+                //sb.AppendLine(string.Format(@"        public const string {0} = ""{1}""; ", t.ColName.ToUpper(), this.toupper?System.Threading.Thread.CurrentThread.CurrentCulture.TextInfo.ToTitleCase(t.ColName):t.ColName));
                 #endregion 
 
                 string coldbtype = ht[t.Dtype].ToString();
@@ -217,7 +217,8 @@ namespace {3}
                     coldbtype == "double" ||
                     coldbtype == "decimal" ||
                     coldbtype == "float" ||
-                    coldbtype == "bool");
+                    coldbtype == "bool"||
+                    coldbtype=="bit");
         }
 
         /// <summary>

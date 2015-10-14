@@ -91,6 +91,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Entity;
 using Sephiroth_IDao;
+using System.ComponentModel.DataAnnotations.Schema;
+using Sephiroth_DAO;
 
 /*************************************************************************************
     * CLR 版本：       4.0.30319.33440
@@ -113,7 +115,7 @@ namespace {3}
     [Table(""{0}"")]
     public class {0}_DAO : BaseDAO<{0}>
     {{
-        private Sephiroth_IDao.IDAO dao = new DapperDAO<{0}>(Sephiroth_DAO.CreateDB_Connection.GetSephiroth_System());
+        private Sephiroth_IDao.IDAO dao = new DapperDAO(Sephiroth_DAO.CreateDB_Connection.GetSephiroth_System());
         public override Sephiroth_IDao.IDAO absORM 
         {{
             get {{ return dao; }}

@@ -9,7 +9,6 @@ using Dapper;
 using SephirothCommon;
 using System.Data.SqlClient;
 using MySql.Data.MySqlClient;
-using Oracle.DataAccess.Client;
 using System.Diagnostics;
 using System.Reflection;
 
@@ -60,7 +59,7 @@ namespace Sephiroth_DAO
             this.SetSqlConnection(this.dbconn);
             this.sqlhelper = ReflectionHelper.CreateInstance<ISqlHelper>(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Namespace,
                 System.Reflection.MethodBase.GetCurrentMethod().DeclaringType.Namespace,
-                this.dbconn.dbtype + "Helper");//根据数据库类型
+                this.dbconn.dbtype + "SqlHelper");//根据数据库类型
         }
         #endregion 
 
@@ -81,10 +80,10 @@ namespace Sephiroth_DAO
                     sqlconn = new MySqlConnection(this.connection);
                     sqlconn.Open();
                     return sqlconn;
-                case DB_Connection.e_DBType.ORACLE:
-                    sqlconn = new OracleConnection(this.connection);
-                    sqlconn.Open();
-                    return sqlconn;
+                //case DB_Connection.e_DBType.ORACLE:
+                //    sqlconn = new OracleConnection(this.connection);
+                //    sqlconn.Open();
+                //    return sqlconn;
             }
             return null;
         }
@@ -146,7 +145,7 @@ namespace Sephiroth_DAO
         /// <param name="columns"></param>
         /// <param name="paramwhere"></param>
         /// <returns></returns>
-        public IEnumerable<T> Query<T>(T param, IEnumerable<string> columns = null, string paramwhere = "",IDbTransaction idbtransaction = null)  where T : BaseEntity, new()
+        public IEnumerable<T> Query<T>(T param=null, IEnumerable<string> columns = null, string paramwhere = "",IDbTransaction idbtransaction = null)  where T : BaseEntity, new()
         {
             using (IDbConnection conn = OpenConnection(idbtransaction))
             {

@@ -40,12 +40,9 @@
       <HintPath>..\packages\MySql.Data.6.9.7\lib\net45\MySql.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Oracle.DataAccess, Version=2.112.1.0, Culture=neutral, PublicKeyToken=89b483f429c47342, processorArchitecture=AMD64">
-      <HintPath>..\packages\Eaardal.OracleDataAccess.2.112.1.0\lib\Oracle.DataAccess.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -55,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseDAO.cs" />
+    <Compile Include="CreateDB_Connection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="realize\DapperDAO.cs" />
     <Compile Include="realize\MSSQLSqlHelper.cs" />

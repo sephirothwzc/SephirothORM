@@ -80,7 +80,7 @@ namespace Sephiroth_IDao
         /// <typeparam name="T">泛型对象建议BaseEntity</typeparam>
         /// <param name="param">插入对象</param>
         /// <returns>受影响行数</returns>
-        int Insert<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
+        int Insert<T>(T param=null, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
 
         /// <summary>
         /// 插入集合是否事务执行默认true
