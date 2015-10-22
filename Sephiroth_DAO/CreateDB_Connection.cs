@@ -23,15 +23,24 @@ namespace Sephiroth_DAO
 {
     public class CreateDB_Connection
     {
-        public static DB_Connection GetSephiroth_System()
+        /// <summary>
+        /// 创建ado对象 对应config.appsetting
+        /// </summary>
+        /// <param name="datasource">数据库名称</param>
+        /// <param name="dbsource">数据源名称</param>
+        /// <param name="dbtype">数据库类型MSSQL、ORACLE、MYSQL</param>
+        /// <param name="username">用户名</param>
+        /// <param name="password">密码</param>
+        /// <returns></returns>
+        public static DB_Connection GetSephiroth_System(string datasource = "datasource", string dbsource = "dbsource", string dbtype = "dbtype", string username = "username", string password = "password")
         {
             return new DB_Connection
             {
-                datasource = System.Configuration.ConfigurationManager.AppSettings["datasource"],
-                dbsource = System.Configuration.ConfigurationManager.AppSettings["dbsource"],
-                dbtype = (DB_Connection.e_DBType)Enum.Parse(typeof(DB_Connection.e_DBType), System.Configuration.ConfigurationManager.AppSettings["dbtype"]??"MSSQL") ,
-                username = System.Configuration.ConfigurationManager.AppSettings["username"],
-                password = System.Configuration.ConfigurationManager.AppSettings["password"]
+                datasource = System.Configuration.ConfigurationManager.AppSettings[datasource],
+                dbsource = System.Configuration.ConfigurationManager.AppSettings[dbsource],
+                dbtype = (DB_Connection.e_DBType)Enum.Parse(typeof(DB_Connection.e_DBType), System.Configuration.ConfigurationManager.AppSettings[dbtype] ?? "MSSQL"),
+                username = System.Configuration.ConfigurationManager.AppSettings[username],
+                password = System.Configuration.ConfigurationManager.AppSettings[password]
             };
         }
     }

@@ -293,6 +293,30 @@ namespace Sephiroth_DAO
             }
         }
 
-        #endregion
+        #endregion 
+
+        
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T">首对象</typeparam>
+        /// <typeparam name="TSecond">join对象</typeparam>
+        /// <typeparam name="TRetun">返回对象</typeparam>
+        /// <param name="sql">脚本</param>
+        /// <param name="map">赋值处理方法</param>
+        /// <param name="splitOn">分割对象列名 数据库字段名</param>
+        /// <param name="param"></param>
+        /// <param name="idbtransaction"></param>
+        /// <returns></returns>
+        public IEnumerable<TRetun> Query<T, TSecond, TRetun>(string sql, Func<T, TSecond, TRetun> map,string splitOn, object param = null, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
+        {
+            using (IDbConnection conn = OpenConnection(idbtransaction))
+            {
+#if DEBUG
+                Debug.Print(sql);
+#endif
+                return conn.Query<T,TSecond,TRetun>(sql,map, param, idbtransaction,splitOn:splitOn);
+            }
+        }
     }
 }
