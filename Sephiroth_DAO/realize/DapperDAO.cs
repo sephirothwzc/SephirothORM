@@ -145,71 +145,85 @@ namespace Sephiroth_DAO
         /// <param name="columns"></param>
         /// <param name="paramwhere"></param>
         /// <returns></returns>
-        public IEnumerable<T> Query<T>(T param=null, IEnumerable<string> columns = null, string paramwhere = "",IDbTransaction idbtransaction = null)  where T : BaseEntity, new()
+        public IEnumerable<T> Query<T>(T param = null, IEnumerable<string> columns = null, string paramwhere = "", IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
-                string sql;
-                if (paramwhere == "")// 有条件生成sql
-                    sql = sqlhelper.Sql_Select(param == null ? new T() : param, columns, paramwhere);
-                else//有对象无条件无列名，全自动生成  and 条件的 所有列名 sql
-                    sql = sqlhelper.Sql_Select(param == null ? new T() : param);
+            IDbConnection conn = OpenConnection(idbtransaction);
+
+            string sql;
+            if (paramwhere == "")// 有条件生成sql
+                sql = sqlhelper.Sql_Select(param == null ? new T() : param, columns, paramwhere);
+            else//有对象无条件无列名，全自动生成  and 条件的 所有列名 sql
+                sql = sqlhelper.Sql_Select(param == null ? new T() : param);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Query<T>(sql, param, idbtransaction);
-            }
+            return conn.Query<T>(sql, param, idbtransaction);
         }
 
         public IEnumerable<dynamic> QueryDynamic(string sql, object param = null, IDbTransaction idbtransaction = null)
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Query(sql, param, idbtransaction);
-            }
+            return conn.Query(sql, param, idbtransaction);
         }
 
         public IEnumerable<T> Query<T>(string sql, object param = null, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Query<T>(sql, param, idbtransaction);
-            }
+            return conn.Query<T>(sql, param, idbtransaction);
+
         }
 
         public int Insert<T>(T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            string sql = sqlhelper.Sql_Insert(param);
-            int row = 0;
-            using (IDbConnection conn = OpenConnection(idbtransaction))
+            try
             {
+                string sql = sqlhelper.Sql_Insert(param);
+                int row = 0;
+                IDbConnection conn = OpenConnection(idbtransaction);
                 row = conn.Execute(sql, param, idbtransaction);
                 //根据业务发生情况决定是否 追加 数据库主键自增的查询
+                return row;
             }
-            return row;
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.Print(ex.Message);
+#endif
+                throw ex;
+            }
         }
 
         public int Insert<T>(IEnumerable<T> param, bool firstsql = true, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            if (firstsql)
+            try
             {
-                string sql = sqlhelper.Sql_Insert(param.FirstOrDefault());
-                return this.Execute(sql, param, idbtransaction);
-            }
-            else
-            {
-                int i = 1;
-                foreach (T item in param)
+                if (firstsql)
                 {
-                    i += this.Insert(item, idbtransaction);
+                    string sql = sqlhelper.Sql_Insert(param.FirstOrDefault());
+                    return this.Execute(sql, param, idbtransaction);
                 }
-                return i;
+                else
+                {
+                    int i = 1;
+                    foreach (T item in param)
+                    {
+                        i += this.Insert(item, idbtransaction);
+                    }
+                    return i;
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                Debug.Print(ex.Message);
+#endif
+                throw ex;
             }
         }
 
@@ -251,46 +265,38 @@ namespace Sephiroth_DAO
 
         public int Execute<T>(string sql, T param, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Execute(sql, param,idbtransaction);
-            }
+            return conn.Execute(sql, param, idbtransaction);
         }
 
         public int Execute(string sql, object param, IDbTransaction idbtransaction = null)
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Execute(sql, param, idbtransaction);
-            }
+            return conn.Execute(sql, param, idbtransaction);
         }
 
         public int Execute<T>(string sql, IEnumerable<T> param, IDbTransaction idbtransaction = null)
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Execute(sql, param, idbtransaction);
-            }
+            return conn.Execute(sql, param, idbtransaction);
         }
 
         public int Execute(string sql, IEnumerable<object> param, IDbTransaction idbtransaction = null)
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Execute(sql, param, idbtransaction);
-            }
+            return conn.Execute(sql, param, idbtransaction);
         }
 
         #endregion 
@@ -308,15 +314,13 @@ namespace Sephiroth_DAO
         /// <param name="param"></param>
         /// <param name="idbtransaction"></param>
         /// <returns></returns>
-        public IEnumerable<TRetun> Query<T, TSecond, TRetun>(string sql, Func<T, TSecond, TRetun> map,string splitOn, object param = null, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
+        public IEnumerable<TRetun> Query<T, TSecond, TRetun>(string sql, Func<T, TSecond, TRetun> map, string splitOn, object param = null, IDbTransaction idbtransaction = null) where T : BaseEntity, new()
         {
-            using (IDbConnection conn = OpenConnection(idbtransaction))
-            {
+            IDbConnection conn = OpenConnection(idbtransaction);
 #if DEBUG
-                Debug.Print(sql);
+            Debug.Print(sql);
 #endif
-                return conn.Query<T,TSecond,TRetun>(sql,map, param, idbtransaction,splitOn:splitOn);
-            }
+            return conn.Query<T, TSecond, TRetun>(sql, map, param, idbtransaction, splitOn: splitOn);
         }
     }
 }
