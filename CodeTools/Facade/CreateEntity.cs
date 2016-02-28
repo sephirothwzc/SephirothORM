@@ -90,6 +90,7 @@ namespace CodeTools
             ht.Add("uniqueidentifier", "string");
             ht.Add("tinyint", "int");
             ht.Add("smallint", "int");
+            ht.Add("bigint", "long");//long l = timespan.Ticks;  TimeSpan timespan = new TimeSpan(l);
             ht.Add("int", "int");
             ht.Add("smalldatetime", "DateTime");
             ht.Add("real", "double");
@@ -163,8 +164,9 @@ namespace {3}
 
                 string coldbtype = ht[t.Dtype].ToString();
                 #region 设置类型可空
-                if (this.IsNumber(coldbtype) &&
-                    !t.IsNullable)
+                //if (this.IsNumber(coldbtype) &&
+                //    !t.IsNullable)
+                if (this.IsNumber(coldbtype) )
                 {
                     coldbtype += "?";
                 }
@@ -186,6 +188,8 @@ namespace {3}
                     sb.AppendLine(@"        [Key]");
                 if(t.IsNullable)
                     sb.AppendLine(@"        [Required]");
+                if(t.Identitys)
+                    sb.AppendLine(@"        [DatabaseGeneratedAttribute(System.ComponentModel.DataAnnotations.Schema.DatabaseGeneratedOption.Identity)]");
                 if(!string.IsNullOrEmpty(t.Remarks))
                     sb.AppendLine(string.Format(@"        [DisplayName(""{0}"")]",t.Remarks));
                 if (this.toupper)//是否首字母大写
@@ -217,8 +221,10 @@ namespace {3}
                     coldbtype == "double" ||
                     coldbtype == "decimal" ||
                     coldbtype == "float" ||
-                    coldbtype == "bool"||
-                    coldbtype=="bit");
+                    coldbtype == "bool" ||
+                    coldbtype == "bit" ||
+                    coldbtype == "bigint" ||
+                    coldbtype == "TimeSpan");
         }
 
         /// <summary>
@@ -231,9 +237,10 @@ namespace {3}
             if (ht[t.Dtype].ToString() == "string"||
                 ht[t.Dtype].ToString() == "DateTime")
                 return t.Lengths;
-            if (ht[t.Dtype].ToString() == "int"||
-                ht[t.Dtype].ToString() == "double"||
-                ht[t.Dtype].ToString() == "float"||
+            if (ht[t.Dtype].ToString() == "int" ||
+                ht[t.Dtype].ToString() == "bigint" ||
+                ht[t.Dtype].ToString() == "double" ||
+                ht[t.Dtype].ToString() == "float" ||
                 ht[t.Dtype].ToString() == "decimal")
                 return t.Precisions;
             //if (ht[t.Dtype].ToString() == "decimal")

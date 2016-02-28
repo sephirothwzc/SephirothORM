@@ -322,5 +322,15 @@ namespace Sephiroth_DAO
 #endif
             return conn.Query<T, TSecond, TRetun>(sql, map, param, idbtransaction, splitOn: splitOn);
         }
+
+        /// <summary>
+        /// 获取链接对象 用于自定义sql处理
+        /// </summary>
+        /// <param name="idbtransaction"></param>
+        /// <returns></returns>
+        public IDbConnection GetConnection(IDbTransaction idbtransaction = null)
+        {
+            return OpenConnection(idbtransaction);
+        }
     }
 }

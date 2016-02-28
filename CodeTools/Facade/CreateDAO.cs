@@ -102,7 +102,12 @@ using Sephiroth_DAO;
     * 文 件 名：       {0}
     * 创建时间：       {2}
     * 作    者：       
-    * 说    明：       
+    * 说    明：           <!--数据链接-->
+    *                      <add key=""dbtype"" value=""MSSQL\ORACLE\MYSQL"" />
+    *                      <add key=""dbsource"" value=""数据库服务名称"" />
+    *                      <add key=""datasource"" value=""数据库名称"" />
+    *                      <add key=""username"" value=""用户名"" />
+    *                      <add key=""password"" value=""密码"" />
     * 修改时间：
     * 修 改 人：
 *************************************************************************************/

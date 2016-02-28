@@ -44,7 +44,9 @@ namespace Sephiroth_IDao
         /// </summary>
         public void SetInsertKey()
         {
-            var list = this.GetType().GetProperties().Where(p => PropertyKey(p) && !PropertyIdentity(p) && p.GetValue(this) == null).ToList();
+            var list = this.GetType().GetProperties().Where(p => PropertyKey(p) 
+                && !PropertyIdentity(p) 
+                && p.GetValue(this) == null).ToList();
             list.ForEach(l =>
             {
                 l.SetValue(this, NewComb());//遍历赋值主键
@@ -146,5 +148,42 @@ namespace Sephiroth_IDao
             return date;
         }
         #endregion
+
+        /// <summary>
+        /// 根据属性名称复制对象到自身
+        /// </summary>
+        /// <param name="model"></param>
+        public void CopyToMe(object model)
+        {
+            this.GetType().GetProperties().ToList().ForEach(pif => {
+                try
+                {
+                    var tpif = model.GetType().GetProperty(pif.Name);
+                    if (tpif != null)
+                    {
+                        var value = tpif.GetValue(model);
+                        //pif.SetValue(this, tpif.GetValue(model));
+                        if (!pif.PropertyType.IsGenericType)
+                        {
+                            //非泛型
+                            pif.SetValue(this, null == value ? null
+                                : Convert.ChangeType(value, pif.PropertyType), null);
+                        }
+                        else
+                        {
+                            //泛型Nullable<>
+                            Type genericTypeDefinition = pif.PropertyType.GetGenericTypeDefinition();
+                            if (genericTypeDefinition == typeof(Nullable<>))
+                            {
+                                pif.SetValue(this, null == value ? null
+                                    : Convert.ChangeType(value, Nullable.GetUnderlyingType(pif.PropertyType)), null);
+                            }
+                        }
+                    }
+                }
+                catch(Exception ex)
+                { }
+            });
+        }
     }
 }

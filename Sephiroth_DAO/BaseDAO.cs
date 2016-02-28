@@ -121,6 +121,11 @@ namespace Sephiroth_DAO
         {
             return absORM.Execute(sql, param, idbtransaction);
         }
+
+        public IDbConnection GetConnection(IDbTransaction idbtransaction = null)
+        {
+            return absORM.GetConnection(idbtransaction);
+        }
         #endregion
     }
 }

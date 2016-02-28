@@ -62,8 +62,6 @@ namespace Sephiroth_IDao
         /// <returns></returns>
         IEnumerable<dynamic> QueryDynamic(string sql, object param = null, IDbTransaction idbtransaction = null);
 
-
-
         /// <summary>
         /// 查询返回 建议返回BaseEntity
         /// </summary>
@@ -90,6 +88,7 @@ namespace Sephiroth_IDao
         /// <param name="firstsql">true以第一对象生成脚本false每个对象逐个生成脚本</param>
         /// <returns>受影响行数</returns>
         int Insert<T>(IEnumerable<T> param, bool firstsql = true, IDbTransaction idbtransaction = null) where T : BaseEntity, new();
+
         #endregion
 
         #region Update
@@ -164,5 +163,7 @@ namespace Sephiroth_IDao
         /// <returns></returns>
         int Execute(string sql, IEnumerable<object> param, IDbTransaction idbtransaction = null);
         #endregion
+
+        IDbConnection GetConnection(IDbTransaction idbtransaction = null);
     }
 }

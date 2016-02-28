@@ -47,5 +47,10 @@ namespace CodeTools.Entity
         /// 长度
         /// </summary>
         public string Lengths { get; set; }
+
+        /// <summary>
+        /// 是否自增
+        /// </summary>
+        public bool Identitys { get; set; }
     }
 }
