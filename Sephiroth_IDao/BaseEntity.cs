@@ -49,7 +49,7 @@ namespace Sephiroth_IDao
                 && p.GetValue(this) == null).ToList();
             list.ForEach(l =>
             {
-                l.SetValue(this, NewComb());//遍历赋值主键
+                l.SetValue(this, Convert.ChangeType(NewComb(),l.GetType()));//遍历赋值主键  Convert.ChangeType(Value，Type)
             });
         }
 
