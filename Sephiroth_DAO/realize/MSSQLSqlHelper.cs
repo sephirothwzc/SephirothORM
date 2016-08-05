@@ -95,7 +95,7 @@ namespace Sephiroth_DAO
             if (strkey.Count == 0)
                 throw new Exception("pk count is zero");
 
-            sql.AppendFormat(" {0} where {1}", string.Join(" and ", strset), string.Join(" and ", strkey));
+            sql.AppendFormat(" {0} where {1}", string.Join(" , ", strset), string.Join(" and ", strkey));
             return sql.ToString();
         }
 
