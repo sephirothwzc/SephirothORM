@@ -46,10 +46,16 @@ namespace Sephiroth_IDao
         {
             var list = this.GetType().GetProperties().Where(p => PropertyKey(p) 
                 && !PropertyIdentity(p) 
-                && p.GetValue(this) == null).ToList();
+                && p.GetValue(this) == null
+                && p.CanWrite).ToList();
             list.ForEach(l =>
             {
-                l.SetValue(this, Convert.ChangeType(NewComb(),l.GetType()));//遍历赋值主键  Convert.ChangeType(Value，Type)
+                l.SetValue(this, NewComb().ToString());
+                //if (l.PropertyType.IsGenericType)
+                //    l.SetValue(this, Convert.ChangeType(NewComb(), l.PropertyType.GetGenericArguments()[0]), null);
+                //else
+                //    l.SetValue(this, Convert.ChangeType(NewComb(), l.PropertyType), null);
+                //l.SetValue(this, Convert.ChangeType(NewComb(), l.PropertyType));//遍历赋值主键  Convert.ChangeType(Value，Type)
             });
         }
 
